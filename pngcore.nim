@@ -1,10 +1,12 @@
 # http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
 
 # http://www.fileformat.info/format/png/corion.htm
-
+import corzl
 import streams
 
 const Header = [137.uint8, 80, 78, 71, 13, 10, 26, 10]
+
+type Color =uint32
 
 type Chunk = object of RootObj
   bytelen: uint32 # number of bytes after this header
@@ -23,6 +25,17 @@ type IHDR = object of Chunk
 type IDAT = object of Chunk
 
 type IEND = object of Chunk
+
+type Filters = enum
+  None=0 
+  Sub=1       
+  Up=2
+  Average=3       
+  Paeth=4       
+
+#proc color(rgba:uint32):Color = Color(rgba)
+const White = Color(0xFFFFFFFF)
+const Black = Color(0x000000FF)
 
 proc crc32(sta: uint32, data:openarray[char]):uint32 =
   var state = sta
@@ -101,7 +114,63 @@ proc initIHDR(w,h:int,bit_depth=8,ctype=6,comptype=0,ftype=0,itype=0):IHDR =
   result.data &= result.filter_type.char
   result.data &= result.interlace_type.char
 
-proc initIDAT() = discard
+proc expand(pixels:openarray[Color],w,h:int):seq[seq[char]] =
+  ## Expand pixels int scanlines of bytes
+  ## Assumes that pixels are 4-bytes ( so r,g,b,a )
+  result = newSeq[seq[char]](h)
+  var offset = 0
+  for yline in result.mitems:
+    yline = newSeq[char]()
+    for xc in 0..<w:
+      yline &= charsOf(pixels[offset+xc])
+    offset+=w
+
+proc deexpand(pixbytes:seq[seq[char]]):string=
+  result = ""#newSeq[char]()
+  for y in pixbytes:
+    for x in y: result.add(x)
+
+proc strToSeqChar(sc:string):seq[char] =
+  result = newSeq[char]()
+  for c in sc: result&=c
+
+proc applyFilter(pixbytes: var seq[seq[char]],filter:Filters=None)=
+  if filter == None:
+    for ln in pixbytes.mitems:
+      ln = 0.char & ln
+
+proc compress(pixbytes: var seq[seq[char]]) =
+  discard
+ 
+proc zcompress*(data: string): string = # TODO: drop zlib
+  let size = data.len
+  var resultSize = corzl.compressBound(Ulong(size))
+  result = newString(resultSize)
+  let res = corzl.compress(
+    result, Pulongf(addr resultSize), data, size)
+  if res != corzl.Z_OK:
+    raise newException(ValueError, "zlib returned error " & $res)
+  result.setLen(resultSize)
+
+proc initIDAT(ihdr:IHDR, pixels:openarray[Color]):IDAT = 
+  var ypos = 0 # goes from 0 to <ihdr.height
+  var xpos = 0 # goes from 0 to <ihdr.width*4
+  let w = ihdr.width*4 # Convert the width from pixels to bytes ( each pixel is 3 bytes of rbg and 1 byte for alpha)
+
+  # Begin with image scanlines represented as described in Image layout;
+  # the layout and total size of this raw data are determined by the fields of IHDR. 
+  var exppixels = expand(pixels,ihdr.width.int,ihdr.height.int)
+  
+  # Filter the image data according to the filtering method specified by the IHDR chunk. 
+  # (Note that with filter method 0, the only one currently defined, this implies 
+  # prepending a filter type byte to each scanline.) 
+  # http://www.libpng.org/pub/png/spec/1.2/PNG-Filters.html <- Filters
+  exppixels.applyFilter(None) # Currently default to none, will need to support others
+
+  # Compress the filtered data using the compression method specified by the IHDR chunk.
+  result.data = zcompress(deexpand(exppixels)).strToSeqChar
+  result.typ = "IDAT"
+  result.bytelen = (4+4+result.data.len).uint32
 
 proc initIEND():IEND=
   result.bytelen = 4+4
@@ -109,11 +178,17 @@ proc initIEND():IEND=
 
 when isMainModule:
   var fs = newFileStream("out.txt",fmWrite)
+
+  let pix = [White, White,White, White,White, White]
+  
   fs.write(Header)
   let ihdr = initIHDR(3,2)
   let iend = initIEND()
+  let idat = initIDAT(ihdr,pix)
   fs.write(serialize(ihdr))
   echo repr serialize(ihdr), "<!IHDR!>"
+  fs.write(serialize(idat))
+  echo repr serialize(idat), "<!IDAT!>"  
   fs.write(serialize(iend))
   echo repr serialize(iend), "<!IEND!>"
   fs.close()
