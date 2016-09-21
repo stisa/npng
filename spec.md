@@ -61,3 +61,15 @@ data fields, but not including the length
 field. The CRC is always present, even for
 empty chunks such as IEND. The CRC algorithm
 is specified below.
+
+IHDR Image Header
+-----------------
+This chunk must appear FIRST. Its contents are:
+
+Width:            4 bytes  
+Height:           4 bytes  
+Bit depth:        1 byte  
+Color type:       1 byte  
+Compression type: 1 byte  
+Filter type:      1 byte  
+Interlace type:   1 byte  
