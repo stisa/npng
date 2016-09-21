@@ -30,6 +30,12 @@ Ancillary chunks
  tEXt |  Yes     | None
  zTXt |  Yes     | None
 
+Header
+------
+OFFSET          | Count |TYPE  | Description
+|---------------|-------|------|----------------|
+ 0000h          |8      | char |  ID=89h,'PNG',13,10,26,10
+
 Chunk spec
 -----------
     OFFSET      | Count | TYPE |   Description
