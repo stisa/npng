@@ -1,0 +1,5 @@
+*.exe
+*.png
+*.txt
+*.log
+nimcache
