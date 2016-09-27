@@ -38,8 +38,9 @@ proc fillWith(png:var PNG,color:Color=White)=
   for p in png.pixels.mitems: p=color 
 
 when isMainModule:
-  var png = initPNG(3,3)
-  png.fillWith(Yellow)
+  var png = initPNG(300,300)
+  png.fillWith(BLue)
+  png.pixels[2]=Red
   png.writeToFile("test.png")
 
 

@@ -1,6 +1,6 @@
 ## Implementation of a basic png encoder, does no filtering and no compression.
 
-import streams
+import streams,math
 
 const Header* = [137.uint8, 80, 78, 71, 13, 10, 26, 10]
 
@@ -148,17 +148,17 @@ proc charsOfAndCompl(b2:uint16):array[4,char]=
 #78 9C - Default Compression
 #78 DA - Best Compression 
 
-proc compress(pixbytes: var seq[seq[char]]) :seq[char] =
+proc compress(pixbytes: string,isFirst:bool=true,isLast:bool=false) :seq[char] =
   ## Wrap data as uncompressed
   result = @[]
-  result &= [120.char, 1.char, 1.char]  #no compression  magic header + final block delimiter
-  let pbytes = flatten(pixbytes)
+  if isFirst: result &= [120.char, 1.char]  #no compression  magic header
+  if isLast: result &= 1.char else: result &= 0.char # set block delimiter if final
   
-  result &= charsOfAndCompl(pbytes.len.uint16) # length
-  result &= pbytes # compressed data
-  result &= charsOf(adler32(pbytes)) # adler32
- 
-proc initIDAT*(ihdr:IHDR, pixels:openarray[Color]):IDAT = 
+  result &= charsOfAndCompl(pixbytes.len.uint16) # length
+  result &= pixbytes # compressed data
+  #result &= charsOf(adler32(pixbytes)) # adler32 MOVED TO initIDATs
+
+proc initIDATs*(ihdr:IHDR, pixels:openarray[Color]):seq[IDAT] = 
   # Begin with image scanlines represented as described in Image layout;
   # the layout and total size of this raw data are determined by the fields of IHDR.
   var exppixels = expand(pixels,ihdr.width.int,ihdr.height.int)
@@ -168,11 +168,32 @@ proc initIDAT*(ihdr:IHDR, pixels:openarray[Color]):IDAT =
   # prepending a filter type byte to each scanline.) 
   # http://www.libpng.org/pub/png/spec/1.2/PNG-Filters.html <- Filters
   exppixels.applyFilter(Filters.None) # Currently default to none, will need to support others
+  let pixlines = exppixels.flatten()
 
-  # Compress the filtered data using the compression method specified by the IHDR chunk.
-  result.data = compress(exppixels) # currently does not compress
-  result.typ = "IDAT"
-  result.bytelen = (result.data.len).uint32
+  const block_size = 62_000
+  let reps = ceil(pixlines.len / block_size).int # 30_000 < 32k
+  result = newSeq[IDAT](reps)
+  
+  if reps>0:
+    
+    for i in 0..<reps:
+      let isFirst = if i==0: true else: false
+      let isLast = if i==reps-1: true else: false
+   
+      # Compress the filtered data using the compression method specified by the IHDR chunk.
+      if isLast:
+        result[i].data = compress(pixlines[i*block_size..^1],isFirst,isLast) # currently does not compress
+        result[i].data &= charsOf(adler32(pixlines)) # adler32
+      else:
+        result[i].data = compress(pixlines[i*block_size..<(i+1)*block_size],isFirst,isLast) # currently does not compress
+      
+      result[i].typ = "IDAT"
+      result[i].bytelen = (result[i].data.len).uint32
+  else:
+    result[0].data = compress(pixlines,true,true) # currently does not compress
+    result[0].data &= charsOf(adler32(pixlines)) # adler32
+    result[0].typ = "IDAT"
+    result[0].bytelen = (result[0].data.len).uint32
 
 proc initIEND*():IEND=
   result.bytelen = 0
@@ -182,15 +203,15 @@ proc initIEND*():IEND=
 proc encodePng*(w,h:int,pixels:openarray[Color]) : string =
   var pngs = newStringStream()
   
-  let ihdr = initIHDR(3,2)
+  let ihdr = initIHDR(w,h)
   let iend = initIEND()
-  let idat = initIDAT(ihdr,pixels)
+  let idats = initIDATs(ihdr,pixels)
   
   pngs.write(Header)
   
   pngs.write(serialize(ihdr))
   
-  pngs.write(serialize(idat))
+  for idat in idats: pngs.write(serialize(idat))
   
   pngs.write(serialize(iend))
   
@@ -199,25 +220,9 @@ proc encodePng*(w,h:int,pixels:openarray[Color]) : string =
   pngs.close()
 
 when isMainModule:
-  var fs = newFileStream("rout.png",fmWrite)
-
-  let pix = [ Color(0xFF00FFFF),White,White,White,White,Color(0xFF00FFFF)]
-  fs.write(Header)
-
-  let ihdr = initIHDR(3,2)
-  let iend = initIEND()
-  let idat = initIDAT(ihdr,pix)
-  fs.write(serialize(ihdr))
-  
-  fs.write(serialize(idat))
-  
-  fs.write(serialize(iend))
-  
-  fs.close()
-
   var fs2 = newFileStream("pngte.png",fmWrite)
 
-  let pix2 = [ White,Black,Red,Green,Blue,Yellow]
+  let pix2 = [ White,Black,White,Black,White,Black]
   fs2.write(encodePng(3,2,pix2))
   fs2.close()
 
