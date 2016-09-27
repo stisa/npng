@@ -1,4 +1,7 @@
 https://github.com/PistonDevelopers/image-png/blob/master/src/encoder.rs
+http://www.libpng.org/pub/png/spec/1.2/PNG-Chunks.html
+http://www.fileformat.info/format/png/corion.htm
+
 
 Critical chunks
 ---------------
