@@ -3,3 +3,4 @@
 *.txt
 *.log
 nimcache
+corzl.nim
