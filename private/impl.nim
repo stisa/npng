@@ -178,6 +178,26 @@ proc initIEND*():IEND=
   result.bytelen = 0
   result.typ = "IEND"
 
+
+proc encodePng*(w,h:int,pixels:openarray[Color]) : string =
+  var pngs = newStringStream()
+  
+  let ihdr = initIHDR(3,2)
+  let iend = initIEND()
+  let idat = initIDAT(ihdr,pixels)
+  
+  pngs.write(Header)
+  
+  pngs.write(serialize(ihdr))
+  
+  pngs.write(serialize(idat))
+  
+  pngs.write(serialize(iend))
+  
+  result = pngs.data
+  
+  pngs.close()
+
 when isMainModule:
   var fs = newFileStream("rout.png",fmWrite)
 
@@ -194,6 +214,12 @@ when isMainModule:
   fs.write(serialize(iend))
   
   fs.close()
+
+  var fs2 = newFileStream("pngte.png",fmWrite)
+
+  let pix2 = [ White,Black,Red,Green,Blue,Yellow]
+  fs2.write(encodePng(3,2,pix2))
+  fs2.close()
 
 
 #proc color(rgba:uint32):Color = Color(rgba)
