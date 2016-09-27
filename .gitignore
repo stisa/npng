@@ -4,3 +4,4 @@
 *.log
 nimcache
 corzl.nim
+cruft
