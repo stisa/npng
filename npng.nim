@@ -58,7 +58,7 @@ when isMainModule:
   var png = initPNG(300,300)
   png.fillWith(BLue)
   png.pixels[2]=Red
-  png.writeToFile("test.png")
+  png.writeToFile("test2.png")
 
 
 #proc color(rgba:uint32):Color = Color(rgba)
