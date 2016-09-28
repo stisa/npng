@@ -134,6 +134,20 @@ proc applyFilter(pixbytes: var seq[seq[char]],filter:Filters= Filters.None)=
   if filter == Filters.None:
     for ln in pixbytes.mitems:
       ln = 0.char & ln
+  elif filter == Filters.Sub:
+    for ln in pixbytes.mitems:
+      var tmp = ln[0..3]
+      for i in 4..<ln.len:
+        tmp &= (ln[i].uint8 - ln[i-4].uint8).char  
+      ln = 1.char & tmp
+  elif filter == Filters.Up:
+  # Not working right, nice effect though
+    for j in 0..<pixbytes.len:
+      for i in 0..<pixbytes[j].len:
+        if j==0: continue
+        pixbytes[j][i] = (pixbytes[j][i].uint8 - pixbytes[j-1][i].uint8).char
+      if j==0: pixbytes[j] = 0.char & pixbytes[j]
+      else: pixbytes[j] = 2.char & pixbytes[j]
 
 proc charsOfAndCompl(b2:uint16):array[4,char]=
   # Returns b2 and it's 1 complement, as 4 chars representing
@@ -167,7 +181,7 @@ proc initIDATs*(ihdr:IHDR, pixels:openarray[Color]):seq[IDAT] =
   # (Note that with filter method 0, the only one currently defined, this implies 
   # prepending a filter type byte to each scanline.) 
   # http://www.libpng.org/pub/png/spec/1.2/PNG-Filters.html <- Filters
-  exppixels.applyFilter(Filters.None) # Currently default to none, will need to support others
+  exppixels.applyFilter(Filters.Sub) # Currently default to none, will need to support others
   let pixlines = exppixels.flatten()
 
   const block_size = 62_000
