@@ -2,7 +2,7 @@
 
 import streams,math
 
-const Header* = [137.uint8, 80, 78, 71, 13, 10, 26, 10]
+const Header* = [137.char, 80.char, 78.char, 71.char, 13.char, 10.char, 26.char, 10.char]
 
 type Color = uint32
 
@@ -215,23 +215,21 @@ proc initIEND*():IEND=
 
 
 proc encodePng*(w,h:int,pixels:openarray[Color]) : string =
-  var pngs = newStringStream()
-  
   let ihdr = initIHDR(w,h)
   let iend = initIEND()
   let idats = initIDATs(ihdr,pixels)
   
-  pngs.write(Header)
+  let sihdr = serialize(ihdr)
+  let siend = serialize(iend)
+
+  result = ""
+  for r in Header:
+    result.add(r)
+  result &= sihdr
   
-  pngs.write(serialize(ihdr))
+  for idat in idats:  result &= serialize(idat)
   
-  for idat in idats: pngs.write(serialize(idat))
-  
-  pngs.write(serialize(iend))
-  
-  result = pngs.data
-  
-  pngs.close()
+  result &= siend
 
 when isMainModule:
   var fs2 = newFileStream("pngte.png",fmWrite)
