@@ -1270,10 +1270,12 @@ function main() {
     title="initPNG(w, h: int): PNG"><wbr />init<wbr />PNG<span class="attachedType" style="visibility:hidden">PNG</span></a></li>
   <li><a class="reference" href="#initPNG,int,int,seq[Color]"
     title="initPNG(w, h: int; pix: seq[Color]): PNG"><wbr />init<wbr />PNG<span class="attachedType" style="visibility:hidden">PNG</span></a></li>
-  <li><a class="reference" href="#writeToFile,PNG,string"
-    title="writeToFile(png: PNG; file: string)"><wbr />write<wbr />To<wbr />File<span class="attachedType" style="visibility:hidden">PNG</span></a></li>
   <li><a class="reference" href="#fillWith,PNG,Color"
     title="fillWith(png: var PNG; color: Color = White)"><wbr />fill<wbr />With<span class="attachedType" style="visibility:hidden">PNG</span></a></li>
+  <li><a class="reference" href="#appendImg,PNG,string"
+    title="appendImg(png: PNG; toID: string = &quot;body&quot;)"><wbr />append<wbr />Img<span class="attachedType" style="visibility:hidden">PNG</span></a></li>
+  <li><a class="reference" href="#writeToFile,PNG,string"
+    title="writeToFile(png: PNG; file: string)"><wbr />write<wbr />To<wbr />File<span class="attachedType" style="visibility:hidden">PNG</span></a></li>
 
   </ul>
 </li>
@@ -1287,7 +1289,7 @@ function main() {
   <div class="section" id="6">
 <h1><a class="toc-backref" href="#6">Imports</a></h1>
 <dl class="item">
-<a class="reference external" href="private/impl.html">private/impl</a>, <a class="reference external" href="streams.html">streams</a>
+<a class="reference external" href="private/impl.html">private/impl</a>, <a class="reference external" href="streams.html">streams</a>, <a class="reference external" href="dom.html">dom</a>, <a class="reference external" href="base64.html">base64</a>
 </dl></div>
 <div class="section" id="7">
 <h1><a class="toc-backref" href="#7">Types</a></h1>
@@ -1307,9 +1309,9 @@ An RGBA Color is defined as follows: <tt class="docutils literal"><span class="p
 </dl>
 
 &nbsp;&nbsp;<a
-href="/tree/master/npng.nim#L5"
+href="/tree/master/npng.nim#L7"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/npng.nim#L5" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/npng.nim#L7" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <dt id="PNG"><a name="PNG"></a><pre><span class="Identifier">PNG</span> <span class="Other">=</span> <span class="Keyword">object</span>
@@ -1319,9 +1321,9 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 A png file. To create one, see <tt class="docutils literal"><span class="pre">initPNG</span></tt> 
 &nbsp;&nbsp;<a
-href="/tree/master/npng.nim#L25"
+href="/tree/master/npng.nim#L27"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/npng.nim#L25" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/npng.nim#L27" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -1333,30 +1335,12 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 
 &nbsp;&nbsp;<a
-href="/tree/master/npng.nim#L17"
-class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/npng.nim#L17" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<dt id="Black"><a name="Black"></a><pre><span class="Identifier">Black</span> <span class="Other">=</span> <span class="DecNumber">0x000000FF</span></pre></dt>
-<dd>
-
-&nbsp;&nbsp;<a
-href="/tree/master/npng.nim#L18"
-class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/npng.nim#L18" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<dt id="Red"><a name="Red"></a><pre><span class="Identifier">Red</span> <span class="Other">=</span> <span class="DecNumber">0x00000000FF0000FF'i64</span></pre></dt>
-<dd>
-
-&nbsp;&nbsp;<a
 href="/tree/master/npng.nim#L19"
 class="link-seesrc" target="_blank">Source</a>
 <a href="/edit/devel/npng.nim#L19" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
-<dt id="Green"><a name="Green"></a><pre><span class="Identifier">Green</span> <span class="Other">=</span> <span class="DecNumber">0x00FF00FF</span></pre></dt>
+<dt id="Black"><a name="Black"></a><pre><span class="Identifier">Black</span> <span class="Other">=</span> <span class="DecNumber">0x000000FF</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
@@ -1365,7 +1349,7 @@ class="link-seesrc" target="_blank">Source</a>
 <a href="/edit/devel/npng.nim#L20" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
-<dt id="Blue"><a name="Blue"></a><pre><span class="Identifier">Blue</span> <span class="Other">=</span> <span class="DecNumber">0x0000FFFF</span></pre></dt>
+<dt id="Red"><a name="Red"></a><pre><span class="Identifier">Red</span> <span class="Other">=</span> <span class="DecNumber">0x00000000FF0000FF'i64</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
@@ -1374,7 +1358,7 @@ class="link-seesrc" target="_blank">Source</a>
 <a href="/edit/devel/npng.nim#L21" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
-<dt id="Yellow"><a name="Yellow"></a><pre><span class="Identifier">Yellow</span> <span class="Other">=</span> <span class="DecNumber">0x00000000FFFF00FF'i64</span></pre></dt>
+<dt id="Green"><a name="Green"></a><pre><span class="Identifier">Green</span> <span class="Other">=</span> <span class="DecNumber">0x00FF00FF</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
@@ -1383,13 +1367,31 @@ class="link-seesrc" target="_blank">Source</a>
 <a href="/edit/devel/npng.nim#L22" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
-<dt id="Purple"><a name="Purple"></a><pre><span class="Identifier">Purple</span> <span class="Other">=</span> <span class="DecNumber">0x00000000FF00FFFF'i64</span></pre></dt>
+<dt id="Blue"><a name="Blue"></a><pre><span class="Identifier">Blue</span> <span class="Other">=</span> <span class="DecNumber">0x0000FFFF</span></pre></dt>
 <dd>
 
 &nbsp;&nbsp;<a
 href="/tree/master/npng.nim#L23"
 class="link-seesrc" target="_blank">Source</a>
 <a href="/edit/devel/npng.nim#L23" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+<dt id="Yellow"><a name="Yellow"></a><pre><span class="Identifier">Yellow</span> <span class="Other">=</span> <span class="DecNumber">0x00000000FFFF00FF'i64</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/tree/master/npng.nim#L24"
+class="link-seesrc" target="_blank">Source</a>
+<a href="/edit/devel/npng.nim#L24" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+<dt id="Purple"><a name="Purple"></a><pre><span class="Identifier">Purple</span> <span class="Other">=</span> <span class="DecNumber">0x00000000FF00FFFF'i64</span></pre></dt>
+<dd>
+
+&nbsp;&nbsp;<a
+href="/tree/master/npng.nim#L25"
+class="link-seesrc" target="_blank">Source</a>
+<a href="/edit/devel/npng.nim#L25" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -1401,18 +1403,36 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Create a w by h png. Initially it is filled with black, fully transparent pixels.
 &nbsp;&nbsp;<a
-href="/tree/master/npng.nim#L30"
+href="/tree/master/npng.nim#L32"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/npng.nim#L30" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/npng.nim#L32" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <dt id="initPNG"><a name="initPNG,int,int,seq[Color]"></a><pre><span class="Keyword">proc</span> <span class="Identifier">initPNG</span><span class="Other">(</span><span class="Identifier">w</span><span class="Other">,</span> <span class="Identifier">h</span><span class="Other">:</span> <span class="Identifier">int</span><span class="Other">;</span> <span class="Identifier">pix</span><span class="Other">:</span> <span class="Identifier">seq</span><span class="Other">[</span><span class="Identifier">Color</span><span class="Other">]</span><span class="Other">)</span><span class="Other">:</span> <span class="Identifier">PNG</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
 <dd>
 Create a w by h png, with initial pixels <tt class="docutils literal"><span class="pre">pix</span></tt>
 &nbsp;&nbsp;<a
-href="/tree/master/npng.nim#L36"
+href="/tree/master/npng.nim#L38"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/npng.nim#L36" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/npng.nim#L38" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+<dt id="fillWith"><a name="fillWith,PNG,Color"></a><pre><span class="Keyword">proc</span> <span class="Identifier">fillWith</span><span class="Other">(</span><span class="Identifier">png</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">PNG</span><span class="Other">;</span> <span class="Identifier">color</span><span class="Other">:</span> <span class="Identifier">Color</span> <span class="Other">=</span> <span class="Identifier">White</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Fill a png with <tt class="docutils literal"><span class="pre">color</span></tt>
+&nbsp;&nbsp;<a
+href="/tree/master/npng.nim#L48"
+class="link-seesrc" target="_blank">Source</a>
+<a href="/edit/devel/npng.nim#L48" class="link-seesrc" target="_blank" >Edit</a>
+
+</dd>
+<dt id="appendImg"><a name="appendImg,PNG,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">appendImg</span><span class="Other">(</span><span class="Identifier">png</span><span class="Other">:</span> <span class="Identifier">PNG</span><span class="Other">;</span> <span class="Identifier">toID</span><span class="Other">:</span> <span class="Identifier">string</span> <span class="Other">=</span> <span class="StringLit">&quot;body&quot;</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">RootEffect</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
+<dd>
+Inline a png in a html file. If toId is presents, it tries adding it to that element, otherwise adds it to body.
+&nbsp;&nbsp;<a
+href="/tree/master/npng.nim#L55"
+class="link-seesrc" target="_blank">Source</a>
+<a href="/edit/devel/npng.nim#L55" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 <dt id="writeToFile"><a name="writeToFile,PNG,string"></a><pre><span class="Keyword">proc</span> <span class="Identifier">writeToFile</span><span class="Other">(</span><span class="Identifier">png</span><span class="Other">:</span> <span class="Identifier">PNG</span><span class="Other">;</span> <span class="Identifier">file</span><span class="Other">:</span> <span class="Identifier">string</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Identifier">Exception</span><span class="Other">]</span><span class="Other">,</span>
@@ -1420,18 +1440,9 @@ class="link-seesrc" target="_blank">Source</a>
 <dd>
 Write a png to a file. The file is created if not present and overwritten otherwise.
 &nbsp;&nbsp;<a
-href="/tree/master/npng.nim#L46"
+href="/tree/master/npng.nim#L68"
 class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/npng.nim#L46" class="link-seesrc" target="_blank" >Edit</a>
-
-</dd>
-<dt id="fillWith"><a name="fillWith,PNG,Color"></a><pre><span class="Keyword">proc</span> <span class="Identifier">fillWith</span><span class="Other">(</span><span class="Identifier">png</span><span class="Other">:</span> <span class="Keyword">var</span> <span class="Identifier">PNG</span><span class="Other">;</span> <span class="Identifier">color</span><span class="Other">:</span> <span class="Identifier">Color</span> <span class="Other">=</span> <span class="Identifier">White</span><span class="Other">)</span> <span class="Other pragmabegin">{.</span><div class="pragma"><span class="Identifier">raises</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span><span class="Other">,</span> <span class="Identifier">tags</span><span class="Other">:</span> <span class="Other">[</span><span class="Other">]</span></div><span class="Other pragmaend">.}</span></pre></dt>
-<dd>
-Fill a png with <tt class="docutils literal"><span class="pre">color</span></tt>
-&nbsp;&nbsp;<a
-href="/tree/master/npng.nim#L53"
-class="link-seesrc" target="_blank">Source</a>
-<a href="/edit/devel/npng.nim#L53" class="link-seesrc" target="_blank" >Edit</a>
+<a href="/edit/devel/npng.nim#L68" class="link-seesrc" target="_blank" >Edit</a>
 
 </dd>
 
@@ -1444,7 +1455,7 @@ class="link-seesrc" target="_blank">Source</a>
       <div class="twelve-columns footer">
         <span class="nim-sprite"></span>
         <br/>
-        <small>Made with Nim. Generated: 2016-09-27 21:46:51 UTC</small>
+        <small>Made with Nim. Generated: 2016-10-01 10:11:52 UTC</small>
       </div>
     </div>
   </div>
