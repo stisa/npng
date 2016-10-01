@@ -534,11 +534,11 @@ function initpng_37219(w_37221, h_37222) {
 var result_37223 = {w: 0, h: 0, pixels: null};
 var F={procname:"npng.initPNG",prev:framePtr,filename:"c:\\users\\silvio\\documents\\dev\\nim\\npng\\npng.nim",line:0};
 framePtr = F;
-F.line = 34;
+F.line = 38;
 result_37223.w = w_37221;
-F.line = 35;
+F.line = 39;
 result_37223.h = h_37222;
-F.line = 36;
+F.line = 40;
 result_37223.pixels = nimCopy(null, newseq_37237(chckRange(mulInt(w_37221, h_37222), 0, 2147483647)), NTI37242);
 framePtr = F.prev;
 return result_37223;
@@ -583,7 +583,7 @@ function fillwith_37551(png_37554, color_37555) {
 var F={procname:"npng.fillWith",prev:framePtr,filename:"c:\\users\\silvio\\documents\\dev\\nim\\npng\\npng.nim",line:0};
 framePtr = F;
 L1: do {
-F.line = 50;
+F.line = 54;
 var p_37603 = [null, 0];
 var p_37603_Idx = 0;
 F.line = 3449;
@@ -596,7 +596,7 @@ L3: while (true) {
 if (!(i_37607 < L_37609)) break L3;
 F.line = 3452;
 p_37603 = png_37554.pixels; p_37603_Idx = chckIndx(i_37607, 0, png_37554.pixels.length)-0;
-F.line = 50;
+F.line = 54;
 p_37603[p_37603_Idx] = color_37555;
 i_37607 = addInt(i_37607, 1);
 if (!(((png_37554.pixels != null ? png_37554.pixels.length : 0) == L_37609))) {
@@ -1450,7 +1450,7 @@ function toseqchar_37610(png_37612) {
 var result_37614 = null;
 var F={procname:"npng.toSeqChar",prev:framePtr,filename:"c:\\users\\silvio\\documents\\dev\\nim\\npng\\npng.nim",line:0};
 framePtr = F;
-F.line = 52;
+F.line = 56;
 result_37614 = nimCopy(null, encodepng_33347(png_37612.w, png_37612.h, png_37612.pixels), NTI33353);
 framePtr = F.prev;
 return result_37614;
@@ -1459,15 +1459,15 @@ function appendimg_37615(png_37617, toid_37618) {
 
 var F={procname:"npng.appendImg",prev:framePtr,filename:"c:\\users\\silvio\\documents\\dev\\nim\\npng\\npng.nim",line:0};
 framePtr = F;
-F.line = 59;
+F.line = 63;
 var iel_37619 = document.createElement("IMG");
-F.line = 60;
+F.line = 64;
 iel_37619.src = toJSStr((makeNimstrLit("data:image/png;base64,").slice(0,-1)).concat(encode_37622(toseqchar_37610(png_37617), 75, makeNimstrLit("\x0D\x0A"))));
 if (eqStrings(toid_37618, makeNimstrLit("body"))) {
 document.body.appendChild(iel_37619);
 }
 else {
-F.line = 64;
+F.line = 68;
 var parent_37802 = document.getElementById(toJSStr(toid_37618));
 parent_37802.appendChild(iel_37619);
 }

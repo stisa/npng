@@ -1,3 +1,7 @@
+##[
+`Examples <./examples.html>`_
+]##
+
 import private/impl
 import streams
 
