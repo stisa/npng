@@ -8,7 +8,7 @@ type Color = uint32
 
 type Chunk = object of RootObj
   bytelen: uint32 # number of bytes after this header
-  typ: string # chunk type s
+  typ: seq[char] # chunk type s
   data: seq[char]
 
 type IHDR* = object of Chunk
@@ -73,12 +73,12 @@ proc charsOf(b4:uint32):array[4,char]=
   result[2] = cast[uint8](b4 shr 8).char
   result[3] = cast[uint8](b4 shr 0).char
  
-proc insertChars(s:var string, chrs:openarray[char])=
-  if s==nil: s=""
+proc insertChars(s:var seq[char], chrs:openarray[char])=
+  if s==nil: s= @[]
   for c in chrs: s&=c
 
-method serialize*(chunk: Chunk):string {.base.}=
-  result=""
+method serialize*(chunk: Chunk):seq[char] {.base.}=
+  result = @[]
   
   result.insertChars(charsOf(chunk.bytelen))
   
@@ -102,7 +102,7 @@ proc initIHDR*(w,h:int,bit_depth=8,ctype=6,comptype=0,ftype=0,itype=0):IHDR =
   result.interlace_type = cast[uint8](itype)
   # General chunk
   result.bytelen = 2*4 + 5
-  result.typ = "IHDR"
+  result.typ = @['I','H','D','R']
   result.data = charsOf(result.width)&charsOf(result.height)
   result.data &= result.bit_depth.char
   result.data &= result.color_type.char
@@ -123,9 +123,9 @@ proc expand(pixels:openarray[Color],w,h:int):seq[seq[char]] =
       yline &= charsOf(pixels[offset+xc])
     offset+=w
 
-proc flatten(pixbytes:seq[seq[char]]):string=
+proc flatten(pixbytes:seq[seq[char]]):seq[char]=
   ## Flatten the array of scanlines to a 1-D array
-  result = ""
+  result = @[]
   for y in pixbytes:
     for x in y: result.add(x)
 
@@ -161,7 +161,7 @@ proc charsOfAndCompl(b2:uint16):array[4,char]=
 #78 9C - Default Compression
 #78 DA - Best Compression 
 
-proc compress(pixbytes: string,isFirst:bool=true,isLast:bool=false) :seq[char] =
+proc compress(pixbytes: seq[char],isFirst:bool=true,isLast:bool=false) :seq[char] =
   ## Wrap data as uncompressed
   result = @[]
   if isFirst: result &= [120.char, 1.char]  #no compression  magic header
@@ -200,20 +200,20 @@ proc initIDATs*(ihdr:IHDR, pixels:openarray[Color]):seq[IDAT] =
       else:
         result[i].data = compress(pixlines[i*block_size..<(i+1)*block_size],isFirst,isLast) # currently does not compress
       
-      result[i].typ = "IDAT"
+      result[i].typ = @['I','D','A','T']
       result[i].bytelen = cast[uint32](result[i].data.len)
   else:
     result[0].data = compress(pixlines,true,true) # currently does not compress
     result[0].data &= charsOf(adler32(pixlines)) # adler32
-    result[0].typ = "IDAT"
+    result[0].typ = @['I','D','A','T']
     result[0].bytelen = cast[uint8](result[0].data.len)
 
 proc initIEND*():IEND=
   result.bytelen = 0
-  result.typ = "IEND"
+  result.typ = @['I','E','N','D']
 
 
-proc encodePng*(w,h:int,pixels:openarray[Color]) : string =
+proc encodePng*(w,h:int,pixels:openarray[Color]) : seq[char] =
   let ihdr = initIHDR(w,h)
   let iend = initIEND()
   let idats = initIDATs(ihdr,pixels)
@@ -221,7 +221,7 @@ proc encodePng*(w,h:int,pixels:openarray[Color]) : string =
   let sihdr = serialize(ihdr)
   let siend = serialize(iend)
 
-  result = ""
+  result = @[]
   for r in Header:
     result.add(r)
   result &= sihdr

@@ -1,6 +1,8 @@
 import private/impl
-import streams,base64
+import streams
 
+when defined(js) or defined(nimdoc):
+  import dom,base64
 
 type Color* = uint32
   ## An RGBA Color is defined as follows:  
@@ -47,46 +49,38 @@ proc fillWith*(png:var PNG,color:Color=White)=
   ## Fill a png with ``color``
   for p in png.pixels.mitems: p=color 
 
-proc stringify(png:PNG):string {.inline.}= encodePng(png.w,png.h,png.pixels)
+proc toSeqChar(png:PNG):seq[char] {.inline.}= encodePng(png.w,png.h,png.pixels)
 
-proc writeBase64(png:PNG):string=
-  ## Write a png file as base64, useful for inlining
-  ## images in js.
-  result = "data:image/png;base64,"&base64.encode(stringify(png))
-
-when not defined(js):
+when defined(js) or defined(nimdoc):
+  proc appendImg*(png:PNG,toID:string="body")=
+    ## Inline a png in a html file. If toId is presents,
+    ## it tries adding it to that element, otherwise adds it
+    ## to body.
+    var iel = document.createElement("IMG").ImageElement
+    iel.src = "data:image/png;base64,"&base64.encode(toSeqChar(png))
+    if toID=="body":
+      document.body.appendChild(iel)
+    else:
+      let parent = document.getElementById(toID)
+      parent.appendChild(iel)
+  
+when not defined(js) or defined(nimdoc):
   proc writeToFile*(png:PNG,file:string)=
     ## Write a png to a file.
     ## The file is created if not present and overwritten otherwise.
     var fs = newFileStream(file,fmWrite)
-    fs.write(stringify(png))
+    fs.write(toSeqChar(png))
     fs.close()
-    #var fs2 = newFileStream("t.txt",fmWrite)
-    #fs2.write("data:image/png;base64,"&base64.encode(stringify(png)))
-    #fs2.close()
-
-const rs = slurp("test2.png")
-
 
 when isMainModule and not defined js:
   var png = initPNG(3,3)
   png.fillWith(Green)
   png.writeToFile("test2.png")
 
-  assert (encode(stringify(png)) == encode(rs), "not equal")
-
-when isMainModule and defined js:
-  import dom
-  
+when isMainModule and defined js:  
   proc log*(str:varargs[auto]) = {.emit: "console.log(`str`);".}
 
-  var png = initPNG(3,3)
-  png.fillWith(Black)
-  log (stringify(png)==rs)
-  log stringify(png)
-  log rs
-  #var iel = document.createElement("IMG").ImageElement
-  #iel.src = stringify(png)#png.writebase64()
-  #log(iel.src)
-  #document.body.appendChild(iel)
+  var png = initPNG(300,300)
+  png.fillWith(Green)
+  png.appendImg("ts")
 #proc color(rgba:uint32):Color = Color(rgba)
