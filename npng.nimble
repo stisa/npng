@@ -6,7 +6,7 @@ license       = "MIT"
 
 # Deps
 requires: "nim >= 0.14.0"
-
-task builddocs, "Build docs folder - examples and documentation":
+task builddocs, "Build docs folder - examples and documentation":    
   exec("nim doc2 -o:docs/index.html npng.nim")
   exec("nim js -o:docs/js/exampleinline.js examples/exampleinline.nim")
+  exec("nim js -o:docs/dochack.js /Dev/nim-devel/tools/dochack/dochack.nim")
