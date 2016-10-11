@@ -39,7 +39,7 @@ var NTI31020 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI3444 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI3452 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI37202 = {size: 0,kind: 43,base: null,node: null,finalizer: null};
-var NTI37242 = {size: 0,kind: 24,base: null,node: null,finalizer: null};
+var NTI37251 = {size: 0,kind: 24,base: null,node: null,finalizer: null};
 var NTI3456 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI3438 = {size: 0, kind: 17, base: null, node: null, finalizer: null};
 var NTI104 = {size: 0,kind: 31,base: null,node: null,finalizer: null};
@@ -75,7 +75,7 @@ NTI3438.base = NTI3436;
 var NNI3456 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
 NTI3456.node = NNI3456;
 NTI3456.base = NTI3424;
-NTI37242.base = NTI37202;
+NTI37251.base = NTI37202;
 var NNI3452 = {kind: 2, len: 0, offset: 0, typ: null, name: null, sons: []};
 NTI3452.node = NNI3452;
 NTI3452.base = NTI3424;
@@ -514,13 +514,13 @@ e_13252 = {m_type: NTI3438, parent: null, name: null, message: null, trace: null
 e_13252.message = nimCopy(null, makeNimstrLit("division by zero"), NTI138);
 raiseException(e_13252, "DivByZeroError");
 }
-function newseq_37237(len_37241) {
+function newseq_37246(len_37250) {
 
-var result_37243 = null;
+var result_37252 = null;
 var F={procname:"newSeq.newSeq",prev:framePtr,filename:"c:\\dev\\nim-devel\\lib\\system.nim",line:0};
 framePtr = F;
-result_37243 = new Array(len_37241); for (var i=0;i<len_37241;++i) {result_37243[i]=0;}framePtr = F.prev;
-return result_37243;
+result_37252 = new Array(len_37250); for (var i=0;i<len_37250;++i) {result_37252[i]=0;}framePtr = F.prev;
+return result_37252;
 }
 function raiseRangeError() {
 
@@ -529,21 +529,21 @@ e_13268 = {m_type: NTI3456, parent: null, name: null, message: null, trace: null
 e_13268.message = nimCopy(null, makeNimstrLit("value out of range"), NTI138);
 raiseException(e_13268, "RangeError");
 }
-function initpng_37219(w_37221, h_37222) {
+function initpng_37228(w_37230, h_37231) {
 
-var result_37223 = {w: 0, h: 0, pixels: null};
+var result_37232 = {w: 0, h: 0, pixels: null};
 var F={procname:"npng.initPNG",prev:framePtr,filename:"c:\\users\\silvio\\documents\\dev\\nim\\npng\\npng.nim",line:0};
 framePtr = F;
-F.line = 38;
-result_37223.w = w_37221;
-F.line = 39;
-result_37223.h = h_37222;
-F.line = 40;
-result_37223.pixels = nimCopy(null, newseq_37237(chckRange(mulInt(w_37221, h_37222), 0, 2147483647)), NTI37242);
+F.line = 46;
+result_37232.w = w_37230;
+F.line = 47;
+result_37232.h = h_37231;
+F.line = 48;
+result_37232.pixels = nimCopy(null, newseq_37246(chckRange(mulInt(w_37230, h_37231), 0, 2147483647)), NTI37251);
 framePtr = F.prev;
-return result_37223;
+return result_37232;
 }
-var png_39003 = /**/[initpng_37219(300, 300)];
+var png_39003 = /**/[initpng_37228(300, 300)];
 function raiseIndexError() {
 
 var e_13284 = null;
@@ -583,7 +583,7 @@ function fillwith_37551(png_37554, color_37555) {
 var F={procname:"npng.fillWith",prev:framePtr,filename:"c:\\users\\silvio\\documents\\dev\\nim\\npng\\npng.nim",line:0};
 framePtr = F;
 L1: do {
-F.line = 54;
+F.line = 62;
 var p_37603 = [null, 0];
 var p_37603_Idx = 0;
 F.line = 3449;
@@ -596,7 +596,7 @@ L3: while (true) {
 if (!(i_37607 < L_37609)) break L3;
 F.line = 3452;
 p_37603 = png_37554.pixels; p_37603_Idx = chckIndx(i_37607, 0, png_37554.pixels.length)-0;
-F.line = 54;
+F.line = 62;
 p_37603[p_37603_Idx] = color_37555;
 i_37607 = addInt(i_37607, 1);
 if (!(((png_37554.pixels != null ? png_37554.pixels.length : 0) == L_37609))) {
@@ -1450,7 +1450,7 @@ function toseqchar_37610(png_37612) {
 var result_37614 = null;
 var F={procname:"npng.toSeqChar",prev:framePtr,filename:"c:\\users\\silvio\\documents\\dev\\nim\\npng\\npng.nim",line:0};
 framePtr = F;
-F.line = 56;
+F.line = 64;
 result_37614 = nimCopy(null, encodepng_33347(png_37612.w, png_37612.h, png_37612.pixels), NTI33353);
 framePtr = F.prev;
 return result_37614;
@@ -1459,15 +1459,15 @@ function appendimg_37615(png_37617, toid_37618) {
 
 var F={procname:"npng.appendImg",prev:framePtr,filename:"c:\\users\\silvio\\documents\\dev\\nim\\npng\\npng.nim",line:0};
 framePtr = F;
-F.line = 63;
+F.line = 71;
 var iel_37619 = document.createElement("IMG");
-F.line = 64;
+F.line = 72;
 iel_37619.src = toJSStr((makeNimstrLit("data:image/png;base64,").slice(0,-1)).concat(encode_37622(toseqchar_37610(png_37617), 75, makeNimstrLit("\x0D\x0A"))));
 if (eqStrings(toid_37618, makeNimstrLit("body"))) {
 document.body.appendChild(iel_37619);
 }
 else {
-F.line = 68;
+F.line = 76;
 var parent_37802 = document.getElementById(toJSStr(toid_37618));
 parent_37802.appendChild(iel_37619);
 }

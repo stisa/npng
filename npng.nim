@@ -38,7 +38,7 @@ const
 
 type PNG* = object
   ## A png file. To create one, see ``initPNG`` 
-  w,h*:int
+  w*,h*:int
   pixels*:seq[Color]
 
 proc initPNG*(w,h:int):PNG=
@@ -49,7 +49,7 @@ proc initPNG*(w,h:int):PNG=
 
 proc initPNG*(w,h:int,pix:seq[Color]):PNG=
   ## Create a w by h png, with initial pixels ``pix``
-  assert(pix.len < (w*h), "Too many pixels")
+  assert(pix.len <= (w*h), "Too many pixels")
   result.w = w
   result.h = h
   if pix.len == w*h:
@@ -81,11 +81,13 @@ when not defined(js) or defined(nimdoc):
     ## Write a png to a file.
     ## The file is created if not present and overwritten otherwise.
     var fs = newFileStream(file,fmWrite)
-    fs.write(toSeqChar(png))
+    fs.write(encodePng(png.w,png.h,png.pixels))
     fs.close()
+    echo encodePng(png.w,png.h,png.pixels)
+    echo png.toSeqChar
 
 when isMainModule and not defined js:
-  var png = initPNG(3,3)
+  var png = initPNG(30,39)
   png.fillWith(Green)
   png.writeToFile("test2.png")
 
