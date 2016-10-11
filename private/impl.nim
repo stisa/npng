@@ -234,7 +234,9 @@ when isMainModule:
   var fs2 = newFileStream("pngte.png",fmWrite)
 
   let pix2 = [ White,Black,White,Black,White,Black]
-  fs2.write(encodePng(3,2,pix2))
+  echo encodePng(3,2,pix2)
+  for c in encodePng(3,2,pix2):
+    fs2.write(c)
   fs2.close()
 
 

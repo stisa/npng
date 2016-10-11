@@ -81,11 +81,10 @@ when not defined(js) or defined(nimdoc):
     ## Write a png to a file.
     ## The file is created if not present and overwritten otherwise.
     var fs = newFileStream(file,fmWrite)
-    fs.write(encodePng(png.w,png.h,png.pixels))
+    for c in toSeqChar(png):
+      fs.write(c)
     fs.close()
-    echo encodePng(png.w,png.h,png.pixels)
-    echo png.toSeqChar
-
+  
 when isMainModule and not defined js:
   var png = initPNG(30,39)
   png.fillWith(Green)
