@@ -41,6 +41,9 @@ type PNG* = object
   w*,h*:int
   pixels*:seq[Color]
 
+proc `[]`*(png:PNG,i,j:int):Color= png.pixels[i*png.w+j]
+proc `[]=`*(png: var PNG,i,j:int,col:Color) = png.pixels[i*png.w+j] = col
+
 proc initPNG*(w,h:int):PNG=
   ## Create a w by h png. Initially it is filled with black, fully transparent pixels.
   result.w = w
