@@ -1,8 +1,8 @@
 Naïve PNG
 =========
 
-### I just found out that [nimPNG](https://github.com/jangko/nimPNG) exists, it is quite complete from I can tell, and ###   
-### it also has a nim-based version of zlib. This project is thus _on hold_ ###
+### I just found out that [nimPNG](https://github.com/jangko/nimPNG) exists, it is quite complete from I can tell, and   
+### it also has a nim-based version of zlib. This project is thus _on hold_
 
 A naïve png encoder written in [nim](https://nim-lang.org).  
 No external dependecies needed, just nim.  
