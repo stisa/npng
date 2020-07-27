@@ -74,7 +74,7 @@ proc charsOf(b4:uint32):array[4,char]=
   result[3] = cast[uint8](b4 shr 0).char
  
 proc insertChars(s:var seq[char], chrs:openarray[char])=
-  if s==nil: s= @[]
+  #if s==nil: s= @[]
   for c in chrs: s&=c
 
 method serialize*(chunk: Chunk):seq[char] {.base.}=

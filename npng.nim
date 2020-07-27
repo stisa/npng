@@ -3,10 +3,10 @@
 ]##
 
 import private/impl
-import streams
+import streams, base64
 
 when defined(js) or defined(nimdoc):
-  import dom,base64
+  import dom
 
 type Color* = uint32
   ## An RGBA Color is defined as follows:  
@@ -66,13 +66,15 @@ proc fillWith*(png:var PNG,color:Color=White)=
 
 proc toSeqChar(png:PNG):seq[char] {.inline.}= encodePng(png.w,png.h,png.pixels)
 
+proc toBase64*(png:PNG): string = encode(png.toSeqChar)
+
 when defined(js) or defined(nimdoc):
   proc appendImg*(png:PNG,toID:string="body")=
     ## Inline a png in a html file. If toId is presents,
     ## it tries adding it to that element, otherwise adds it
     ## to body.
     var iel = document.createElement("IMG").ImageElement
-    iel.src = "data:image/png;base64,"&base64.encode(toSeqChar(png))
+    iel.src = "data:image/png;base64," & png.toBase64
     if toID=="body":
       document.body.appendChild(iel)
     else:
@@ -92,6 +94,7 @@ when isMainModule and not defined js:
   var png = initPNG(30,39)
   png.fillWith(Green)
   png.writeToFile("test2.png")
+  echo png.toBase64
 
 when isMainModule and defined js:  
   proc log*(str:varargs[auto]) = {.emit: "console.log(`str`);".}
