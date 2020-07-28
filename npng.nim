@@ -64,7 +64,7 @@ proc fillWith*(png:var PNG,color:Color=White)=
   ## Fill a png with ``color``
   for p in png.pixels.mitems: p=color 
 
-proc toSeqChar(png:PNG):seq[char] {.inline.}= encodePng(png.w,png.h,png.pixels)
+proc toSeqChar(png:PNG):seq[char]= encodePng(png.w,png.h,png.pixels)
 
 proc toBase64*(png:PNG): string = encode(png.toSeqChar)
 

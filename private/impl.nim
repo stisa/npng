@@ -6,22 +6,33 @@ const Header* = [137.char, 80.char, 78.char, 71.char, 13.char, 10.char, 26.char,
 
 type Color = uint32
 
-type Chunk = object of RootObj
-  bytelen: uint32 # number of bytes after this header
-  typ: seq[char] # chunk type s
-  data: seq[char]
+type Chunk = concept c
+  c.bytelen is uint32 # number of bytes after this header
+  c.typ is seq[char] # chunk type s
+  c.data is seq[char]
 
-type IHDR* = object of Chunk
+type IHDR* = object
   width,height : uint32
   bit_depth: uint8 # Valid values are 1, 2, 4, 8, and 16
   color_type:uint8 # Valid values are 0, 2, 3, 4, and 6
   compression_type:uint8 # only 0 is defined
   filter_type:uint8 # only 0 is defined
   interlace_type:uint8 # 0 and 1 are defined
+  bytelen: uint32 # number of bytes after this header
+  typ: seq[char] # chunk type s
+  data: seq[char]
 
-type IDAT* = object of Chunk
 
-type IEND* = object of Chunk
+type IDAT* = object
+  bytelen: uint32 # number of bytes after this header
+  typ: seq[char] # chunk type s
+  data: seq[char]
+
+type IEND* = object
+  bytelen: uint32 # number of bytes after this header
+  typ: seq[char] # chunk type s
+  data: seq[char]
+
 
 type Filters* {.pure.}= enum
   None=0 
@@ -77,7 +88,7 @@ proc insertChars(s:var seq[char], chrs:openarray[char])=
   #if s==nil: s= @[]
   for c in chrs: s&=c
 
-method serialize*(chunk: Chunk):seq[char] {.base.}=
+proc serialize*(chunk: Chunk):seq[char] =
   result = @[]
   
   result.insertChars(charsOf(chunk.bytelen))
